@@ -14,97 +14,192 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     
-    private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
-    private var spinnyNode : SKShapeNode?
+    private var faceNode:SKSpriteNode!
+    private var scrollArea:SKSpriteNode!
+    private var optionBar:SKSpriteNode!
+    
+    private var hairNode:SKSpriteNode!
+    private var eyeNode:SKSpriteNode!
+    private var mustacheNode:SKSpriteNode!
+    private var clothsNode:SKSpriteNode!
+    private var backgroundNode:SKSpriteNode!
+
+    private var selectedTab:CGFloat = 1
+    private var scrollToPage:SKAction!
     
     override func sceneDidLoad() {
+        self.initUI()
+        
+    }
+    
+    func initUI(){
+        
+        self.faceNode = self.childNode(withName: "//FACEBOX") as? SKSpriteNode
+        self.scrollArea = self.childNode(withName: "//SCROLLAREA") as? SKSpriteNode
+        self.optionBar = self.childNode(withName: "//OPTIONSBAR") as? SKSpriteNode
+        
+        self.hairNode = self.faceNode.childNode(withName: "//HAIR") as? SKSpriteNode
+        self.eyeNode = self.faceNode.childNode(withName: "//EYES") as? SKSpriteNode
+        self.mustacheNode = self.faceNode.childNode(withName: "//MUSTACHE") as? SKSpriteNode
+        self.clothsNode = self.faceNode.childNode(withName: "//SHIRT") as? SKSpriteNode
+        self.backgroundNode = self.childNode(withName: "//BACKGROUND") as? SKSpriteNode
 
-        self.lastUpdateTime = 0
-        
-        // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
-        
-        // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(M_PI), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
-    }
+        self.eyeNode.alpha = 0.0
+        self.mustacheNode.alpha = 0.0
+
+     }
     
-    
-    func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
-    }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+        let touch = touches.first!
+        let positionInScene = touch.location(in: self)
+        let touchedNode = self.atPoint(positionInScene)
+        if let _ = touchedNode.name{
+            handleInteractionsOnNode(node: touchedNode)
         }
-        
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
     
+    
+    private func handleInteractionsOnNode(node:SKNode){
+    
+        if let nodeWithName = node.name {
+            switch (nodeWithName){
+                case "HairsButton":
+                    self.scrollToPage(pageName: "Page1")
+                    break
+
+                case "EyesButton":
+                    self.scrollToPage(pageName: "Page2")
+                    break
+
+                case "BearedButton":
+                    self.scrollToPage(pageName: "Page3")
+                    break
+                
+                case "MustacheButton":
+                    self.scrollToPage(pageName: "Page4")
+                    break
+
+                case "ClothsButton":
+                    self.scrollToPage(pageName: "Page5")
+                    break
+                
+                default:
+                    self.defaultInteractionsForNode(node:node)
+            }
+        }
+        
+    }
+    
+    func defaultInteractionsForNode(node:SKNode){
+        
+        if let parentNode = node.parent,let parentNodeName = node.parent?.name,let nodeName = node.name{
+        
+            switch parentNodeName  {
+                
+                case "Page1":
+                    //handle head interactions
+                    parentNode.enumerateChildNodes(withName: nodeName, using: { (node, _) in
+                        self.hairNode.texture = SKTexture(imageNamed: nodeName)
+                    })
+                    break
+                
+                case "Page2":
+                    //handle eyewear interactions
+                    parentNode.enumerateChildNodes(withName: nodeName, using: { (node, _) in
+                        self.eyeNode.alpha = 1.0
+                        self.eyeNode.texture = SKTexture(imageNamed: nodeName)
+                    })
+                    break
+                
+                case "Page3":
+                    //handle background interactions
+                    parentNode.enumerateChildNodes(withName: nodeName, using: { (node, _) in
+                        self.backgroundNode.texture = SKTexture(imageNamed: nodeName)
+                    })
+                    break
+                
+                case "Page4":
+                    //handle mustache interactions
+                    parentNode.enumerateChildNodes(withName: nodeName, using: { (node, _) in
+                        self.mustacheNode.alpha = 1.0
+                        self.mustacheNode.texture = SKTexture(imageNamed: nodeName)
+                    })
+                    break
+                
+                case "Page5":
+                    //handle cloths interactions
+                    parentNode.enumerateChildNodes(withName: nodeName, using: { (node, _) in
+                        self.clothsNode.texture = SKTexture(imageNamed: nodeName)
+                    })
+                    break
+                
+                default: break
+            }
+        }
+    }
+    
+    func scrollToPage(pageName:String){
+        
+        let value:CGFloat = self.getChildIdFromParentNode(parentNode: self.scrollArea, childName: pageName)
+
+        if value == 999{
+         return
+        }
+        
+        if value > self.selectedTab{
+            
+            if let scrollCoordinates = self.scrollArea{
+                let coordinates = scrollCoordinates.frame.size.width
+                self.scrollToPage = SKAction.moveBy(x: -(coordinates * (value-selectedTab)), y: 0, duration: 0.5)
+            }
+            self.scrollArea?.run(self.scrollToPage)
+            self.selectedTab = value
+
+        }else if value < self.selectedTab{
+
+            if let scrollCoordinates = self.scrollArea{
+                let coordinates = scrollCoordinates.frame.size.width
+                self.scrollToPage = SKAction.moveBy(x: (coordinates * (selectedTab-value)), y: 0, duration: 0.5)
+            }
+            self.scrollArea?.run(self.scrollToPage)
+            self.selectedTab = value
+        }
+    }
+    
+    
+    private func getChildIdFromParentNode(parentNode:SKNode,childName:String)->CGFloat{
+        var counter:CGFloat = 1
+        
+        if let parentNode:SKNode = parentNode as? SKNode , let childName:String = childName as? String{
+            for node in parentNode.children{
+                if(node.name == childName){
+                    let substring = String(format: "%.0f", counter)
+                    if childName.contains(substring) {
+                            return counter
+                    }
+                }
+                counter += 1
+            }
+        }
+        return 999
+    }
+    
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        print("touchesMoved")
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        print("touchesEnded")
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        print("touchesCancelled")
     }
-    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-        // Initialize _lastUpdateTime if it has not already been
-        if (self.lastUpdateTime == 0) {
-            self.lastUpdateTime = currentTime
-        }
-        
-        // Calculate time since last update
-        let dt = currentTime - self.lastUpdateTime
-        
-        // Update entities
-        for entity in self.entities {
-            entity.update(deltaTime: dt)
-        }
-        
-        self.lastUpdateTime = currentTime
     }
 }

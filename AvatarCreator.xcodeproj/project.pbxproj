@@ -427,6 +427,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = A55NN48642;
 				INFOPLIST_FILE = AvatarCreator/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
@@ -441,6 +443,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = A55NN48642;
 				INFOPLIST_FILE = AvatarCreator/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
@@ -528,6 +532,7 @@
 				D453EBB01E538322003570A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D453EBB11E538322003570A5 /* Build configuration list for PBXNativeTarget "AvatarCreatorTests" */ = {
 			isa = XCConfigurationList;
@@ -536,6 +541,7 @@
 				D453EBB31E538322003570A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D453EBB41E538322003570A5 /* Build configuration list for PBXNativeTarget "AvatarCreatorUITests" */ = {
 			isa = XCConfigurationList;
@@ -544,6 +550,7 @@
 				D453EBB61E538322003570A5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
