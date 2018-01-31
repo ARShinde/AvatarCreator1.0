@@ -29,7 +29,6 @@ class GameScene: SKScene {
     
     override func sceneDidLoad() {
         self.initUI()
-        
     }
     
     func initUI(){
@@ -46,16 +45,16 @@ class GameScene: SKScene {
 
         self.eyeNode.alpha = 0.0
         self.mustacheNode.alpha = 0.0
-
      }
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch = touches.first!
-        let positionInScene = touch.location(in: self)
-        let touchedNode = self.atPoint(positionInScene)
-        if let _ = touchedNode.name{
-            handleInteractionsOnNode(node: touchedNode)
+        if let touch = touches.first{
+            let positionInScene = touch.location(in: self)
+            let touchedNode = self.atPoint(positionInScene)
+            if let _ = touchedNode.name{
+                handleInteractionsOnNode(node: touchedNode)
+            }
         }
     }
     

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 import SpriteKit
 import GameplayKit
 import Photos
@@ -46,12 +47,13 @@ class GameViewController: UIViewController {
                     view.presentScene(sceneNode)
                     view.ignoresSiblingOrder = true
                     
-                    view.showsFPS = true
-                    view.showsNodeCount = true
+                    //view.showsFPS = true
+                    //view.showsNodeCount = true
                 }
             }
         }
     }
+    
     
     @IBAction func saveAvatarClicked(_ sender: Any) {
         
@@ -65,11 +67,9 @@ class GameViewController: UIViewController {
                 
                 if let backgroundNode = sceneNode.childNode(withName: "BACKGROUND"){
                     print(backgroundNode.frame)
-                    
-                    
-                    self.getScreenshot(scene: sceneNode,captureSize:backgroundNode.frame, completion: { (texture) in
+                    let captureSize = CGRect.init(x: 0, y: 64, width: self.view.frame.size.width, height: self.view.frame.size.height/2+64) //64 padding
+                    self.getScreenshot(scene: sceneNode,captureSize:captureSize, completion: { (texture) in
                         
-                        print("got texture \(texture)")
                         let image = UIImage(cgImage: texture.cgImage())
 
                         
@@ -80,6 +80,10 @@ class GameViewController: UIViewController {
                             if success{
                                 print("saved successfully")
                              //   self.imageView.image = image
+                                let alert:UIAlertController = UIAlertController.init(title: "Avatar Creator", message: " \n Your Avatar Saved Successfully", preferredStyle:.alert)
+                                alert.addAction(UIAlertAction.init(title: "OK", style: UIAlertActionStyle.cancel, handler: nil))
+            
+                                self.present(alert, animated: true, completion: nil)
                             }
                         })
                     })
